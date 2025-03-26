@@ -70,6 +70,7 @@ object main{
     var z: Int = z_in
 
     val BJKST_bucket_size = bucket_size_in
+    val hash = hash_function(BJKST_bucket_size)
 
     def this(s: String, z_of_s: Int, bucket_size_in: Int){
       /* A constructor that allows you pass in a single string, zeroes of the string, and the bucket size to initialize the sketch */
