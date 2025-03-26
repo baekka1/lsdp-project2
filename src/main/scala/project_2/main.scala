@@ -67,13 +67,13 @@ object main{
 /* A constructor that requies intialize the bucket and the z value. The bucket size is the bucket size of the sketch. */
 
     var bucket: Set[(String, Int)] = bucket_in
-    var z: Int =
+    var z: Int = z_in
 
-    val BJKST_bucket_size = bucket_size_in;z_in
+    val BJKST_bucket_size = bucket_size_in
 
     def this(s: String, z_of_s: Int, bucket_size_in: Int){
       /* A constructor that allows you pass in a single string, zeroes of the string, and the bucket size to initialize the sketch */
-      this(Set((s, z_of_s )) , z_of_s, bucket_size_in)
+      this(Set[(String,Int)]((s, z_of_s )) , z_of_s, bucket_size_in)
     }
 
     def +(that: BJKSTSketch): BJKSTSketch = {    /* Merging two sketches */
@@ -84,7 +84,6 @@ object main{
 
     }
   }
-
 
   def tidemark(x: RDD[String], trials: Int): Double = {
     val h = Seq.fill(trials)(new hash_function(2000000000))
@@ -98,7 +97,6 @@ object main{
     return ans
   }
 
-
   def BJKST(x: RDD[String], width: Int, trials: Int) : Double = {
 
   }
@@ -108,7 +106,6 @@ object main{
 
   }
 
-
   def exact_F0(x: RDD[String]) : Long = {
     val ans = x.distinct.count
     return ans
@@ -116,7 +113,9 @@ object main{
 
 
   def exact_F2(x: RDD[String]) : Long = {
-
+    val count = x.map(i=>(i,1)).reduceByKey(_+_)
+    val ans = count.map{ case (_,i) => i * i}.reduce(_+_)
+    return ans
   }
 
 
@@ -135,7 +134,7 @@ object main{
     val dfrdd = df.rdd.map(row => row.getString(0))
 
     val startTimeMillis = System.currentTimeMillis()
-
+    
     if(args(1)=="BJKST") {
       if (args.length != 4) {
         println("Usage: project_2 input_path BJKST #buckets trials")
