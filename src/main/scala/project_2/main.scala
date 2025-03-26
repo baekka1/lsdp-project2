@@ -102,8 +102,27 @@ object main{
   }
 
 
-  def Tug_of_War(x: RDD[String], width: Int, depth:Int) : Long = {
+  def Tug_of_War(x: RDD[String], width: Int, depth:Int): Long = {
+    // run depth * width TOW sketches
+    val trials = width * depth
+    val results = collection.mutable.ArrayBuffer[Long]()
+    
+    for (d <- (1 to depth)) {
+      for (w <- (1 to width)) {
+        val hashFunc = new four_universal_Radamacher_hash_function()
+        val z = x.map(element => hashFunc.hash(element)).reduce(_+_)
+        results.append(z * z)
+      }
+    }
 
+    // divide into groups of size width
+    val groupsList = results.grouped(width).toList
+    // get means of each group
+    val squaredValues = groupsList.map(l => l.reduce(_+_) / l.length)
+    // sort and find median
+    val sortedValues = squaredValues.sorted
+    val mid = sortedValues.length / 2
+    return sortedValues.apply(mid)
   }
 
   def exact_F0(x: RDD[String]) : Long = {
