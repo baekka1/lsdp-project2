@@ -22,9 +22,17 @@ You'll be submitting a report along with your code that provides commentary on t
 On GCP: Exact F2. Time elapsed:76s. Estimate: 8567966130
 2. **(3 points)** Once you've implemented the function, set `width` to 10 and `depth` to 3. Run `Tug_of_War` locally **and** on GCP with 1 driver and 4 machines having 2 x N1 cores. Copy the results to your report. Terminate the program if it runs for longer than 30 minutes.
   - On GCP: Tug-of-War F2 Approximation. Width :10. Depth: 3. Time elapsed:579s. Estimate: 10146147119
-4. **(3 points)** Implement the `BJKST` function. The function accepts an RDD of strings, a parameter `width`, and a parameter `trials` as inputs. `width` denotes the maximum bucket size of each sketch. The function should run `trials` sketches and return the median of the estimates of the sketches. A template of the `BJKSTSketch` class is also included in the sample code. You are welcome to finish its methods and apply that class or write your own class from scratch. A 2-universal hash function class `hash_function(numBuckets_in: Long)` has also been provided and will hash a string to an integer in the range `[0, numBuckets_in - 1]`. Once you've implemented the function, determine the smallest `width` required in order to achieve an error of +/- 20% on your estimate. Keeping `width` at that value, set `depth` to 5. Run `BJKST` locally **and** on GCP with 1 driver and 4 machines having 2 x N1 cores. Copy the results to your report. Terminate the program if it runs for longer than 30 minutes.
+4. **(3 points)** Once you've implemented the function, determine the smallest `width` required in order to achieve an error of +/- 20% on your estimate. Keeping `width` at that value, set `depth` to 5. Run `BJKST` locally **and** on GCP with 1 driver and 4 machines having 2 x N1 cores. Copy the results to your report. Terminate the program if it runs for longer than 30 minutes.
+  - On GCP: BJKST Algorithm. Bucket Size:5200. Trials:5. Time elapsed:40s. Estimate: 8763392.0
 5. **(1 point)** Compare the BJKST algorithm to the exact F0 algorithm and the tug-of-war algorithm to the exact F2 algorithm. Summarize your findings.
   - Exact F0. Time elapsed:66s. Estimate: 7406649
+  - BJKST Algorithm. Bucket Size:5200. Trials:5. Time elapsed:40s. Estimate: 8763392.0
+
+The BJKST Algorithm with 5 trials and a bucket size of 5200 ran quicker than the exact F0 and with a error of around 18%
+
+  - Exact F2. Time elapsed:76s. Estimate: 8567966130
+  - Tug-of-War F2 Approximation. Width :10. Depth: 3. Time elapsed:579s. Estimate: 10146147119
+
 
 ## Submission via GitHub
 Delete your project's current **README.md** file (the one you're reading right now) and include your report as a new **README.md** file in the project root directory. Have no fear—the README with the project description is always available for reading in the template repository you created your repository from. For more information on READMEs, feel free to visit [this page](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-readmes) in the GitHub Docs. You'll be writing in [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown). Be sure that your repository is up to date and you have pushed all changes you've made to the project's code. When you're ready to submit, simply provide the link to your repository in the Canvas assignment's submission.
