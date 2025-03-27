@@ -77,9 +77,13 @@ object main{
     }
 
     def +(that: BJKSTSketch): BJKSTSketch = {    /* Merging two sketches - IP*/
-     val new_z: Int = scala.math.max(that.z, this.z)
+     var new_z: Int = scala.math.max(that.z, this.z)
      var new_bucket = this.bucket.union(that.bucket)
-     new_bucket = new_bucket.filter { case(_,value) => value >= new_z}
+     new_bucket = new_bucket.filter { case (_,value) => value >= new_z}
+     while (new_bucket.size > this.BJKST_bucket_size) {
+       new_z += 1
+       new_bucket = new_bucket.filter { case (_,value) => value >= new_z}
+     }
      return new BJKSTSketch(new_bucket, new_z, this.BJKST_bucket_size)
     }
 
@@ -92,6 +96,10 @@ object main{
         }
       }
       return new BJKSTSketch(this.bucket, this.z, this.BJKST_bucket_size)
+    }
+
+    def get_result(): Double = {
+      return scala.math.pow(2,z) * bucket.size
     }
   }
 
@@ -108,11 +116,19 @@ object main{
   }
 
   def BJKST(x: RDD[String], width: Int, trials: Int) : Double = {
-    val h = new hash_function(2000000000)
-    //val sketch = new BJKSTSketch(Set[(String, Int)], 0, width)
-    //val final_sketch = x.map(i => sketch.add_string(i, h.zeroes(h.hash(i))))
-    //val result = final_sketch.collect()
-    val ret: Double = 0
+    val hashes = Seq.fill(trials)(new hash_function(width))
+
+    // function to create the sketches
+    def combine_threads = (accu: Seq[BJKSTSketch], word: String) => {
+      Seq.range(0,trials).map(i => accu(i).add_string(word, hashes(i).zeroes(hashes(i).hash(word))))
+    }
+
+    // function to combine the sketches
+    def combine_sketches = (accu1: Seq[BJKSTSketch], accu2: Seq[BJKSTSketch]) => {
+      Seq.range(0,trials).map(i => accu1(i)+accu2(i))
+    }
+    val sketches = x.aggregate(Seq.range(0,trials).map(i => new BJKSTSketch(Set.empty[(String, Int)], 0, width)))(combine_threads, combine_sketches)
+    val ret = sketches.map(z => z.get_result()).sortWith(_<_)(trials/2)
     return ret
   }
 
