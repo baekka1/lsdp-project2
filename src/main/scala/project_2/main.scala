@@ -70,19 +70,28 @@ object main{
     var z: Int = z_in
 
     val BJKST_bucket_size = bucket_size_in
-    val hash = hash_function(BJKST_bucket_size)
 
     def this(s: String, z_of_s: Int, bucket_size_in: Int){
       /* A constructor that allows you pass in a single string, zeroes of the string, and the bucket size to initialize the sketch */
-      this(Set[(String,Int)]((s, z_of_s )) , z_of_s, bucket_size_in)
+      this(Set[(String,Int)]((s, z_of_s)) , 0, bucket_size_in)
     }
 
-    def +(that: BJKSTSketch): BJKSTSketch = {    /* Merging two sketches */
-
+    def +(that: BJKSTSketch): BJKSTSketch = {    /* Merging two sketches - IP*/
+     val new_z: Int = scala.math.max(that.z, this.z)
+     var new_bucket = this.bucket.union(that.bucket)
+     new_bucket = new_bucket.filter { case(_,value) => value >= new_z}
+     return new BJKSTSketch(new_bucket, new_z, this.BJKST_bucket_size)
     }
 
     def add_string(s: String, z_of_s: Int): BJKSTSketch = {   /* add a string to the sketch */
-
+      if (z_of_s >= this.z) {
+        this.bucket = this.bucket + ((s, z_of_s))
+        while (this.bucket.size > this.BJKST_bucket_size) {
+          this.z += 1
+          this.bucket = this.bucket.filter { case (_,value) => value >= this.z} 
+        }
+      }
+      return new BJKSTSketch(this.bucket, this.z, this.BJKST_bucket_size)
     }
   }
 
@@ -99,7 +108,12 @@ object main{
   }
 
   def BJKST(x: RDD[String], width: Int, trials: Int) : Double = {
-
+    val h = new hash_function(2000000000)
+    //val sketch = new BJKSTSketch(Set[(String, Int)], 0, width)
+    //val final_sketch = x.map(i => sketch.add_string(i, h.zeroes(h.hash(i))))
+    //val result = final_sketch.collect()
+    val ret: Double = 0
+    return ret
   }
 
 
