@@ -1,46 +1,54 @@
-# Large Scale Data Processing: Project 2
-## Getting started
-Head to [Project 1](https://github.com/CSCI3390Spring2025/project_1) if you're looking for information on Git, template repositories, or setting up your local/remote environments.
+# Project 1 Report: Rafael Singer and Katie Baek
 
-## Resilient distributed datasets in Spark
-This project will familiarize you with RDD manipulations by implementing some of the sketching algorithms the course has covered thus far.  
+## 1. Exact F2
 
-You have been provided with the program's skeleton, which consists of 5 functions for computing either F0 or F2: the BJKST, tidemark, tug-of-war, exact F0, and exact F2 algorithms. The tidemark and exact F0 functions are given for your reference.
+| Environment | Time Elapsed | Estimate      |
+| ----------- | ------------ | ------------- |
+| GCP         | 76s          | 8,567,966,130 |
+| Local       | 39s          | 8,567,966,130 |
 
-## Relevant data
+## 2. Tug-of-War
 
-You can find the TAR file containing `2014to2017.csv` [here](https://drive.google.com/file/d/1MtCimcVKN6JrK2sLy4GbjeS7E2a-UMA0/view?usp=sharing). Download and expand the TAR file for local processing. For processing in the cloud, refer to the steps for creating a storage bucket in [Project 1](https://github.com/CSCI3390Spring2025/project_1) and upload `2014to2017.csv`.
+Parameters: Width: 10, Depth: 3
 
-`2014to2017.csv` contains the records of parking tickets issued in New York City from 2014 to 2017. You'll see that the data has been cleaned so that only the license plate information remains. Keep in mind that a single car can receive multiple tickets within that period and therefore appear in multiple records.  
+| Environment | Time Elapsed | Estimate       |
+| ----------- | ------------ | -------------- |
+| GCP         | 579s         | 10,146,147,119 |
+| Local       | 156s         | 10,418,861,797 |
 
-**Hint**: while implementing the functions, it may be helpful to copy 100 records or so to a new file and use that file for faster testing.  
+## 3. BJKST
 
-## Calculating and reporting your findings
-You'll be submitting a report along with your code that provides commentary on the tasks below.  
+Parameters: Bucket Size: 5200, Trials: 5
 
-1. **(3 points)** 
-On GCP: Exact F2. Time elapsed:76s. Estimate: 8567966130
-2. **(3 points)** Once you've implemented the function, set `width` to 10 and `depth` to 3. Run `Tug_of_War` locally **and** on GCP with 1 driver and 4 machines having 2 x N1 cores. Copy the results to your report. Terminate the program if it runs for longer than 30 minutes.
-  - On GCP: Tug-of-War F2 Approximation. Width :10. Depth: 3. Time elapsed:579s. Estimate: 10146147119
-4. **(3 points)** Once you've implemented the function, determine the smallest `width` required in order to achieve an error of +/- 20% on your estimate. Keeping `width` at that value, set `depth` to 5. Run `BJKST` locally **and** on GCP with 1 driver and 4 machines having 2 x N1 cores. Copy the results to your report. Terminate the program if it runs for longer than 30 minutes.
-  - On GCP: BJKST Algorithm. Bucket Size:5200. Trials:5. Time elapsed:40s. Estimate: 8763392.0
-5. **(1 point)** Compare the BJKST algorithm to the exact F0 algorithm and the tug-of-war algorithm to the exact F2 algorithm. Summarize your findings.
-  - Exact F0. Time elapsed:66s. Estimate: 7406649
-  - BJKST Algorithm. Bucket Size:5200. Trials:5. Time elapsed:40s. Estimate: 8763392.0
+| Environment | Time Elapsed | Estimate    |
+| ----------- | ------------ | ----------- |
+| GCP         | 40s          | 8,763,392.0 |
+| Local       | 11s          | 8,646,656.0 |
 
-The BJKST Algorithm with 5 trials and a bucket size of 5200 ran quicker than the exact F0 and with a error of around 18%
+## 4. Algorithm Comparisons
 
-  - Exact F2. Time elapsed:76s. Estimate: 8567966130
-  - Tug-of-War F2 Approximation. Width :10. Depth: 3. Time elapsed:579s. Estimate: 10146147119
+### BJKST vs. Exact F0
 
+| Algorithm | Environment | Time Elapsed | Estimate    |
+| --------- | ----------- | ------------ | ----------- |
+| Exact F0  | GCP         | 66s          | 7,406,649   |
+| BJKST     | GCP         | 40s          | 8,763,392.0 |
+| BJKST     | Local       | 11s          | 8,646,656.0 |
 
-## Submission via GitHub
-Delete your project's current **README.md** file (the one you're reading right now) and include your report as a new **README.md** file in the project root directory. Have no fear—the README with the project description is always available for reading in the template repository you created your repository from. For more information on READMEs, feel free to visit [this page](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-readmes) in the GitHub Docs. You'll be writing in [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown). Be sure that your repository is up to date and you have pushed all changes you've made to the project's code. When you're ready to submit, simply provide the link to your repository in the Canvas assignment's submission.
+The BJKST Algorithm with 5 trials and a bucket size of 5200 ran significantly faster than the exact F0 calculation, both on GCP (40s vs 66s) and locally. The error rate was approximately 18% on GCP and 17% on local execution, showing consistent accuracy across different environments.
 
-## You must do the following to receive full credit:
-1. Create your report in the ``README.md`` and push it to your repo.
-2. In the report, you must include your (and your group members') full name in addition to any collaborators.
-3. Submit a link to your repo in the Canvas assignment.
+### Tug-of-War vs. Exact F2
 
-## Late submission penalties
-Please refer to the course policy.
+| Algorithm  | Environment | Time Elapsed | Estimate       |
+| ---------- | ----------- | ------------ | -------------- |
+| Exact F2   | GCP         | 76s          | 8,567,966,130  |
+| Exact F2   | Local       | 39s          | 8,567,966,130  |
+| Tug-of-War | GCP         | 579s         | 10,146,147,119 |
+| Tug-of-War | Local       | 156s         | 10,418,861,797 |
+
+Surprisingly, the Tug-of-War F2 approximation took significantly longer to execute than the exact F2 calculation in both environments:
+
+- On GCP: ~7.6x slower (579s vs 76s)
+- Locally: ~4x slower (156s vs 39s)
+
+The estimates showed an error rate of approximately 18-21% compared to the exact F2 value. While Tug-of-War provides theoretical benefits for very large datasets, in this implementation it proved less efficient than the exact calculation. This suggests that for datasets of this size, the exact F2 calculation might be the better choice in terms of both accuracy and performance.
